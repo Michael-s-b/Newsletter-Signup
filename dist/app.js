@@ -12,6 +12,10 @@ app.use(express_1.default.static("public"));
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/signup.html");
 });
+const apiKey = process.env.apiKey;
+console.log(apiKey);
+const listID = process.env.listID;
+console.log(listID);
 app.post("/", (req, res) => {
     const firstName = req.body.fName;
     const lastName = req.body.lName;
@@ -30,18 +34,16 @@ app.post("/", (req, res) => {
         ],
     };
     const dataCenter = "us17";
-    const listId = "bac66442fc";
     const options = {
         method: "POST",
-        auth: "michael:9c48789563c44cbe6ff8fbdec89ffb5a-us17",
+        auth: `michael:${apiKey}`,
     };
-    const url = `https://${dataCenter}.api.mailchimp.com/3.0/lists/${listId}`;
+    const url = `https://${dataCenter}.api.mailchimp.com/3.0/lists/${listID}`;
     const jsonData = JSON.stringify(data);
     const request = https_1.default.request(url, options, (response) => {
         response.on("data", (data) => {
-            // console.log(JSON.parse(data));
+            console.log(JSON.parse(data));
             let apiResponse = JSON.parse(data);
-            // console.log(apiResponse);
             if (apiResponse.error_count === 0) {
                 res.sendFile(__dirname + "/success.html");
             }
@@ -60,8 +62,3 @@ app.post("/failure", (req, res) => {
 app.listen(3000, () => {
     console.log("listening on port 3000 ...");
 });
-//api key
-//9c48789563c44cbe6ff8fbdec89ffb5a-us17
-// list id
-//bac66442fc
-//api url https://<dc>.api.mailchimp.com/3.0/
